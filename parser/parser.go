@@ -8,11 +8,28 @@ import (
 	"yosaka/go-interpreter/token"
 )
 
+type (
+	prefixParseFn func() ast.Expression               // 前置演算子解析関数
+	infixParseFn  func(ast.Expression) ast.Expression // 中置演算子解析関数
+)
+
 type Parser struct {
-	l         *lexer.Lexer
-	errors    []string
+	l      *lexer.Lexer
+	errors []string
+
 	curToken  token.Token
 	peekToken token.Token
+
+	prefixParseFns map[token.TokenType]prefixParseFn // 前置演算子
+	infixParseFns  map[token.TokenType]infixParseFn  // 中置演算子
+}
+
+func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
+	p.prefixParseFns[tokenType] = fn
+}
+
+func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
+	p.infixParseFns[tokenType] = fn
 }
 
 func New(l *lexer.Lexer) *Parser {
