@@ -15,14 +15,13 @@ func main() {
 		panic(err)
 	}
 
-	if len(os.Args) == 0 {
+	if len(os.Args) == 1 {
 		fmt.Printf("hello %s! This is the Monkey programming language!\n", user.Username)
 
 		fmt.Printf("Feel free to type in commands\n")
 		repl.Start(os.Stdin, os.Stdout)
 
 	} else {
-		fmt.Println("please input filename!")
-		runner.Run("./example/01.mk", os.Stdout)
+		runner.Run(os.Args[1], os.Stdout)
 	}
 }
